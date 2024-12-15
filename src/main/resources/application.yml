@@ -1,0 +1,18 @@
+spring.application.name: test-task
+
+
+spring.datasource:
+  url: jdbc:postgresql://localhost:7777/local_db
+  username: local_user
+  password: local_user
+
+spring.liquibase.change-log: classpath:changelog/changelog.xml
+
+cron.schedule: 0 0/2 * * * *
+
+com.fast.hands.test_task:
+  base-currency: USD
+  client:
+   apilayer:
+     api_key: api_key # Assume that we fetched it from env var
+     base-url: http://apilayer.net/api

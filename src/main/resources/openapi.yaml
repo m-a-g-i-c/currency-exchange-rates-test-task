@@ -1,0 +1,128 @@
+openapi: 3.0.3
+info:
+  title: Swagger Petstore - OpenAPI 3.0
+  description: some description
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:8080/
+paths:
+  /currencies:
+    post:
+      summary: Add a new currency to the system
+      description: Add a new currency
+      operationId: addCurrency
+      requestBody:
+        description: Create a new currency
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiCurrency'
+        required: true
+      responses:
+        '201':
+          description: Currency created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiCurrency'
+        '405':
+          description: Invalid input
+    get:
+      summary: Get the list of all currencies in a system
+      description: Get the list of currencies
+      operationId: getCurrencies
+      responses:
+        '200':
+          description: Successfull operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiCurrency"
+  /currency/{currency_code}/exchange-rates:
+    parameters:
+      - name: currency_code
+        in: path
+        description: Currency code according to ISO 4217, to get the exchange rates for
+        required: true
+        schema:
+          $ref: "#/components/schemas/CurrencyCode"
+      - name: target
+        in: query
+        required: true
+        description: Comma-separated list of currency codes to get the exchange rate for
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/CurrencyCode"
+        style: simple
+        explode: false
+        example: USD,EUR,PLN
+    get:
+      description: Get exchanged rates for the specified currency
+      operationId: getExchangeRates
+      responses:
+        '200':
+          description: "Exchanged rates returned successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiExchangeRate"
+        '404':
+          description: "Currency exchange rate not found"
+components:
+  schemas:
+    ApiExchangeRate:
+      type: object
+      properties:
+        source:
+          $ref: "#/components/schemas/CurrencyCode"
+        timestamp:
+          type: string
+          format: date-time
+        exchange_rates:
+          $ref: "#/components/schemas/ApiExchangeRateItem"
+    ApiExchangeRateItem:
+      type: object
+      additionalProperties:
+        type: number
+        format: float
+      example:
+        USD: 4.065434
+        PLN: 2.234523
+    ApiCurrency:
+      type: object
+      properties:
+        currency_code:
+          $ref: "#/components/schemas/CurrencyCode"
+        name:
+          type: string
+          nullable: true
+          maxLength: 255
+          example: Ukrainian hryvnia
+        description:
+          type: integer
+          nullable: true
+          maxLength: 255
+    CurrencyCode:
+      type: string
+      nullable: false
+      description: Currency code according to ISO 4217
+      minLength: 1
+      maxLength: 3
+      example: UAH
+    UuidId:
+      type: string
+      format: uuid
+      nullable: false
+      readOnly: true

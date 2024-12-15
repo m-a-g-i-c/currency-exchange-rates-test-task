@@ -1,0 +1,19 @@
+
+
+cron.schedule: 0 0 * * * *
+
+spring.liquibase.change-log: classpath:test-changelog/test-changelog.xml
+
+com.fast.hands.test_task:
+  client:
+    apilayer:
+      api_key: api_key
+      base-url: http://localhost:${wiremock.server.port}
+
+spring:
+  jpa:
+    show-sql: true
+  datasource.username: test
+  datasource.password: test
+  datasource:
+    driver-class-name: org.postgresql.Driver
